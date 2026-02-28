@@ -1,7 +1,7 @@
 import { IJournalEntry } from '../model/JournalEntry.js'
 import { IJournalRepository } from '../repository/JournalRespository.js'
-import { Result, Err } from '../lib/result.js'
-import { JournalError, InvalidContent, ValidationError } from '../lib/errors.js'
+import { Result, Err, Ok } from '../lib/result.js'
+import { JournalError, InvalidContent, ValidationError,InvalidTagError } from '../lib/errors.js'
 
 /**
  * Service interface.
@@ -73,7 +73,34 @@ class JournalService implements IJournalService {
   }
   // SETUP: Empty skeleton for tag validation and entry updating
   async addTagToEntry(id: string, tag: string): Promise<Result<IJournalEntry, JournalError>> {
-    return {} as any;
+    // Normalize the tag to ensure consistent formatting
+    const normalizedTag = tag.trim().toLowerCase();
+
+    // Domain validation rules
+    if (!normalizedTag) {
+      return Err(InvalidTagError('Tag cannot be empty.'));
+    }
+
+    if (!/^[a-z0-9-]+$/.test(normalizedTag)) {
+      return Err(InvalidTagError('Tags must be lowercase alphanumeric and can contain hyphens.'));
+    }
+
+    if (normalizedTag.length > 20) {
+      return Err(InvalidTagError('Tags must be 20 characters or fewer.'));
+    }
+
+    // Fetch the entry from the repository
+    const entryResult = await this.repository.getById(id);
+    if (!entryResult.ok) {
+      return entryResult; // Passes up the EntryNotFound error
+    }
+
+    const entry = entryResult.value;
+    
+    // Mutate the entity (in our in-memory setup, this updates the reference directly)
+    entry.addTag(normalizedTag);
+
+    return Ok(entry);
   }
   
   // SETUP: Empty skeleton for cross-layer retrieval

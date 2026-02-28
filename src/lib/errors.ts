@@ -20,6 +20,7 @@ export const ValidationError = (message: string): JournalError => ({
   message,
 });
 
+
 export const InvalidTagError = (message: string): JournalError => ({
   name: 'InvalidTagError',
   message,

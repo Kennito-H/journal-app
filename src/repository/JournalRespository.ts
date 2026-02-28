@@ -91,9 +91,12 @@ class JournalRepository implements IJournalRepository {
       Err(EntryNotFound(`Journal entry with id ${id} not found`)),
     )
   }
-  // SETUP: Empty skeleton method returning an empty array for now
+
   getByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>> {
-    return Promise.resolve(Ok([]));
+    const matchingEntries = this.entries.filter(entry => 
+      entry.tags.includes(tag)
+    );
+    return Promise.resolve(Ok(matchingEntries));
   }
 }
 
