@@ -18,6 +18,7 @@ export interface IJournalController {
   showTagForm(res: Response, id: string): Promise<void>;
   addTagFromForm(res: Response, id: string, tag: string): Promise<void>;
   showEntriesByTag(res: Response, tag: string): Promise<void>;
+  showAllTags(res: Response): Promise<void>;
 }
 
 class JournalController implements IJournalController {
@@ -304,6 +305,18 @@ class JournalController implements IJournalController {
     }
 
     res.render('entries/index', { entries: result.value, currentTag: tag });
+  }
+
+  async showAllTags(res: Response): Promise<void> {
+    this.logger.info('Listing all unique tags');
+    const result = await this.service.getAllTags();
+    
+    if (!result.ok) {
+      res.status(500).render('entries/not-found', { message: 'Unable to load tags list' });
+      return;
+    }
+
+    res.render('tags/index', { tags: result.value });
   }
 }
 

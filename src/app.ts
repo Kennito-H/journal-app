@@ -180,6 +180,13 @@ export class ExpressApp implements IApp {
         await controller.showEntriesByTag(res, tag);
       }),
     )
+
+    this.app.get(
+      '/tags',
+      asyncHandler(async (_req, res) => {
+        await controller.showAllTags(res);
+      }),
+    )
   }
 
   getExpressApp(): express.Express {

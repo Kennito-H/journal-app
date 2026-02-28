@@ -23,6 +23,7 @@ export interface IJournalService {
   deleteEntry(id: string): Promise<Result<null, JournalError>>
   addTagToEntry(id: string, tag: string): Promise<Result<IJournalEntry, JournalError>>;
   getEntriesByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>>;
+  getAllTags(): Promise<Result<string[], JournalError>>;
 }
 
 class JournalService implements IJournalService {
@@ -71,12 +72,9 @@ class JournalService implements IJournalService {
   async deleteEntry(id: string): Promise<Result<null, JournalError>> {
     return this.repository.deleteById(id)
   }
-  // SETUP: Empty skeleton for tag validation and entry updating
   async addTagToEntry(id: string, tag: string): Promise<Result<IJournalEntry, JournalError>> {
-    // Normalize the tag to ensure consistent formatting
     const normalizedTag = tag.trim().toLowerCase();
 
-    // Domain validation rules
     if (!normalizedTag) {
       return Err(InvalidTagError('Tag cannot be empty.'));
     }
@@ -89,7 +87,6 @@ class JournalService implements IJournalService {
       return Err(InvalidTagError('Tags must be 20 characters or fewer.'));
     }
 
-    // Fetch the entry from the repository
     const entryResult = await this.repository.getById(id);
     if (!entryResult.ok) {
       return entryResult; // Passes up the EntryNotFound error
@@ -97,16 +94,20 @@ class JournalService implements IJournalService {
 
     const entry = entryResult.value;
     
-    // Mutate the entity (in our in-memory setup, this updates the reference directly)
     entry.addTag(normalizedTag);
 
     return Ok(entry);
   }
   
-  // SETUP: Empty skeleton for cross-layer retrieval
   async getEntriesByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>> {
-    return {} as any;
+    const normalizedTag = tag.trim().toLowerCase();
+    
+    return this.repository.getByTag(normalizedTag);
   }
+  async getAllTags(): Promise<Result<string[], JournalError>> {
+    return this.repository.getAllTags();
+  }
+
 }
 
 export function CreateJournalService(

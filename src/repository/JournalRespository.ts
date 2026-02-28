@@ -26,6 +26,7 @@ export interface IJournalRepository {
   ): Promise<Result<IJournalEntry, JournalError>>
   deleteById(id: string): Promise<Result<null, JournalError>>
   getByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>>;
+  getAllTags(): Promise<Result<string[], JournalError>>;
 }
 
 class JournalRepository implements IJournalRepository {
@@ -94,9 +95,22 @@ class JournalRepository implements IJournalRepository {
 
   getByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>> {
     const matchingEntries = this.entries.filter(entry => 
-      entry.tags.includes(tag)
+      entry.tags && entry.tags.includes(tag)
     );
     return Promise.resolve(Ok(matchingEntries));
+  }
+
+  getAllTags(): Promise<Result<string[], JournalError>> {
+    const uniqueTags = new Set<string>();
+    
+    this.entries.forEach(entry => {
+      if (entry.tags) {
+        entry.tags.forEach(tag => uniqueTags.add(tag));
+      }
+    });
+
+    const sortedTags = Array.from(uniqueTags).sort();
+    return Promise.resolve(Ok(sortedTags));
   }
 }
 

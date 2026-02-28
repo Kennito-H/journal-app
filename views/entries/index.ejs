@@ -6,8 +6,15 @@
 <% } %>
 
 <h1>All Journal Entries</h1>
+<div style="margin-bottom: 20px;">
+  <a href="/tags" style="background-color: #0056b3; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+    Browse All Tags
+  </a>
+</div>
+
 <ul>
   <% entries.forEach((entry) => { %>
     <li><a href="/entries/<%= entry.id %>"><%= entry.content %></a></li>
   <% }) %>
 </ul>
+
