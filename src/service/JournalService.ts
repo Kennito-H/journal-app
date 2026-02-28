@@ -1,7 +1,7 @@
 import { IJournalEntry } from '../model/JournalEntry.js'
 import { IJournalRepository } from '../repository/JournalRespository.js'
 import { Result, Err } from '../lib/result.js'
-import { JournalError, InvalidContent, ValidationError } from './errors.js'
+import { JournalError, InvalidContent, ValidationError } from '../lib/errors.js'
 
 /**
  * Service interface.

@@ -1,7 +1,7 @@
 import type { Response } from 'express'
 import { IJournalService } from '../service/JournalService'
 import { ILoggingService } from '../service/LoggingService'
-import { JournalError } from '../service/errors'
+import { JournalError } from '../lib/errors'
 
 export interface IJournalController {
   showHome(res: Response): Promise<void>

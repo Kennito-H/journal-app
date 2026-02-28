@@ -4,7 +4,7 @@ import {
   JournalError,
   EntryNotFound,
   ValidationError,
-} from '../service/errors.js'
+} from '../lib/errors.js'
 
 /**
  * Repository interface.
