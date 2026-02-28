@@ -40,7 +40,7 @@ class JournalController implements IJournalController {
     if (error.name === 'EntryNotFound') {
       return 404
     }
-    if (error.name === 'InvalidContent' || error.name === 'ValidationError') {
+    if (error.name === 'InvalidContent' || error.name === 'ValidationError' || error.name === "InvalidTagError") {
       return 400
     }
     return 500
@@ -246,14 +246,65 @@ class JournalController implements IJournalController {
     }
     res.status(204).send()
   }
-  // SETUP: Empty controller method for the GET route (form view)
-  async showTagForm(res: Response, id: string): Promise<void> {}
 
-  // SETUP: Empty controller method for the POST route (form submission)
-  async addTagFromForm(res: Response, id: string, tag: string): Promise<void> {}
+  async showTagForm(res: Response, id: string): Promise<void> {
+    this.logger.info(`Rendering tag form for entry ${id}`);
+    const result = await this.service.getEntry(id);
+    
+    if (!result.ok) {
+      if (this.isJournalError(result.value) && result.value.name === 'EntryNotFound') {
+        res.status(404).render('entries/not-found', { id, error: result.value });
+      } else {
+        res.status(500).render('entries/not-found', { id, message: 'Unable to load entry' });
+      }
+      return;
+    }
+    res.render('tags/new', { entry: result.value, error: null });
+  }
 
-  // SETUP: Empty controller method for the GET route (filtered list view)
-  async showEntriesByTag(res: Response, tag: string): Promise<void> {}
+  async addTagFromForm(res: Response, id: string, tag: string): Promise<void> {
+    this.logger.info(`Adding tag '${tag}' to entry ${id}`);
+    const result = await this.service.addTagToEntry(id, tag);
+
+    if (!result.ok && this.isJournalError(result.value)) {
+      const error = result.value;
+      
+      // If validation fails, re-render the form with the specific error message
+      if (error.name === 'InvalidTagError') {
+        this.logger.warn(`Add tag rejected: ${error.message}`);
+        const entryResult = await this.service.getEntry(id);
+        
+        if (entryResult.ok) {
+          res.status(400).render('tags/new', { entry: entryResult.value, error: error.message });
+        } else {
+          res.status(500).send('Unable to reload entry.');
+        }
+        return;
+      }
+      
+      res.status(this.mapErrorStatus(error)).send(error.message);
+      return;
+    }
+
+    if (!result.ok) {
+      res.status(500).send('Unable to add tag.');
+      return;
+    }
+
+    res.redirect(`/entries/${id}`);
+  }
+
+  async showEntriesByTag(res: Response, tag: string): Promise<void> {
+    this.logger.info(`Listing entries for tag: ${tag}`);
+    const result = await this.service.getEntriesByTag(tag);
+    
+    if (!result.ok) {
+      res.status(500).render('entries/not-found', { message: 'Unable to list entries for tag' });
+      return;
+    }
+
+    res.render('entries/index', { entries: result.value, currentTag: tag });
+  }
 }
 
 export function CreateJournalController(
