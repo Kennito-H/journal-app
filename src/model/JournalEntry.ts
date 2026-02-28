@@ -22,6 +22,8 @@ export class JournalEntry implements IJournalEntry {
     this.content = newContent;
     this.updatedAt = new Date();
   }
+  // SETUP: Stub for the method that will handle adding a single tag
+  addTag(tag: string): void {}
 }
 
 export function createJournalEntry(id: string, content: string): IJournalEntry {

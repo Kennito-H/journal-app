@@ -151,6 +151,24 @@ export class ExpressApp implements IApp {
         await this.controller.deleteEntry(res, id)
       }),
     )
+    // SETUP: Route to display the HTML form for a new tag
+    this.app.get(
+      '/entries/:id/tags/new',
+      asyncHandler(async (req, res) => {})
+    )
+
+    // SETUP: Route to accept the application/x-www-form-urlencoded data
+    this.app.post(
+      '/entries/:id/tags',
+      express.urlencoded({ extended: true }),
+      asyncHandler(async (req, res) => {})
+    )
+
+    // SETUP: Route to display entries filtered by a specific tag
+    this.app.get(
+      '/tags/:tag',
+      asyncHandler(async (req, res) => {})
+    )
   }
 
   getExpressApp(): express.Express {

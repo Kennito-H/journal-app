@@ -21,6 +21,8 @@ export interface IJournalService {
     content: string,
   ): Promise<Result<IJournalEntry, JournalError>>
   deleteEntry(id: string): Promise<Result<null, JournalError>>
+  addTagToEntry(id: string, tag: string): Promise<Result<IJournalEntry, JournalError>>;
+  getEntriesByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>>;
 }
 
 class JournalService implements IJournalService {
@@ -68,6 +70,15 @@ class JournalService implements IJournalService {
 
   async deleteEntry(id: string): Promise<Result<null, JournalError>> {
     return this.repository.deleteById(id)
+  }
+  // SETUP: Empty skeleton for tag validation and entry updating
+  async addTagToEntry(id: string, tag: string): Promise<Result<IJournalEntry, JournalError>> {
+    return {} as any;
+  }
+  
+  // SETUP: Empty skeleton for cross-layer retrieval
+  async getEntriesByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>> {
+    return {} as any;
   }
 }
 

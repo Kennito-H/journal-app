@@ -15,6 +15,9 @@ export interface IJournalController {
   patchEntry(res: Response, id: string, content: string): Promise<void>
   deleteEntry(res: Response, id: string): Promise<void>
   deleteEntryFromForm(res: Response, id: string): Promise<void>
+  showTagForm(res: Response, id: string): Promise<void>;
+  addTagFromForm(res: Response, id: string, tag: string): Promise<void>;
+  showEntriesByTag(res: Response, tag: string): Promise<void>;
 }
 
 class JournalController implements IJournalController {
@@ -23,6 +26,7 @@ class JournalController implements IJournalController {
     private readonly logger: ILoggingService,
   ) {}
 
+  
   private isJournalError(value: unknown): value is JournalError {
     return (
       typeof value === 'object' &&
@@ -242,6 +246,14 @@ class JournalController implements IJournalController {
     }
     res.status(204).send()
   }
+  // SETUP: Empty controller method for the GET route (form view)
+  async showTagForm(res: Response, id: string): Promise<void> {}
+
+  // SETUP: Empty controller method for the POST route (form submission)
+  async addTagFromForm(res: Response, id: string, tag: string): Promise<void> {}
+
+  // SETUP: Empty controller method for the GET route (filtered list view)
+  async showEntriesByTag(res: Response, tag: string): Promise<void> {}
 }
 
 export function CreateJournalController(

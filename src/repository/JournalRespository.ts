@@ -25,6 +25,7 @@ export interface IJournalRepository {
     content: string,
   ): Promise<Result<IJournalEntry, JournalError>>
   deleteById(id: string): Promise<Result<null, JournalError>>
+  getByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>>;
 }
 
 class JournalRepository implements IJournalRepository {
@@ -89,6 +90,10 @@ class JournalRepository implements IJournalRepository {
     return Promise.resolve(
       Err(EntryNotFound(`Journal entry with id ${id} not found`)),
     )
+  }
+  // SETUP: Empty skeleton method returning an empty array for now
+  getByTag(tag: string): Promise<Result<IJournalEntry[], JournalError>> {
+    return Promise.resolve(Ok([]));
   }
 }
 
