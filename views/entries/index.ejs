@@ -1,3 +1,10 @@
+<% if (typeof currentTag !== 'undefined' && currentTag) { %>
+  <div style="background-color: #f0f0f0; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+    <strong>Showing entries tagged with:</strong> #<%= currentTag %> 
+    <a href="/entries" style="margin-left: 10px; text-decoration: underline;">Clear Filter</a>
+  </div>
+<% } %>
+
 <h1>All Journal Entries</h1>
 <ul>
   <% entries.forEach((entry) => { %>

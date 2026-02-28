@@ -8,3 +8,32 @@
 </form>
 
 <p><a href="/entries">Back to Entries</a></p>
+
+<div class="entry-tags" style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px;">
+  <h3>Categorized Under:</h3>
+  
+  <% if (entry.tags && entry.tags.length > 0) { %>
+    <ul style="list-style: none; padding: 0; display: flex; gap: 10px; flex-wrap: wrap;">
+      
+      <% entry.tags.forEach(function(tag) { %>
+        <li>
+          <a 
+            href="/tags/<%= tag %>" 
+            style="background-color: #e0e0e0; padding: 5px 12px; border-radius: 15px; text-decoration: none; color: #333; font-size: 0.9em;"
+          >
+            #<%= tag %>
+          </a>
+        </li>
+      <% }); %>
+
+    </ul>
+  <% } else { %>
+    <p style="color: #666; font-style: italic;">No tags added to this entry yet.</p>
+  <% } %>
+
+  <div style="margin-top: 15px;">
+    <a href="/entries/<%= entry.id %>/tags/new" style="font-weight: bold; color: #0056b3;">
+      + Add a New Tag
+    </a>
+  </div>
+</div>

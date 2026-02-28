@@ -1,0 +1,32 @@
+<%- contentFor('body') %>
+
+<div class="tag-form-container">
+  <h2>Add a Tag</h2>
+  <p>Adding a tag to entry: <strong><%= entry.id %></strong></p>
+
+  <form action="/entries/<%= entry.id %>/tags" method="POST">
+    
+    <div>
+      <label for="tag">Tag Name:</label>
+      <input 
+        type="text" 
+        id="tag" 
+        name="tag" 
+        placeholder="e.g. backend-dev" 
+        required
+      >
+    </div>
+
+    <% if (error) { %>
+      <div style="color: red; border: 1px solid red; padding: 10px; margin-top: 10px;">
+        <strong>Validation Error:</strong> <%= error %>
+      </div>
+    <% } %>
+
+    <div style="margin-top: 15px;">
+      <button type="submit">Save Tag</button>
+      <a href="/entries/<%= entry.id %>">Cancel</a>
+    </div>
+    
+  </form>
+</div>
